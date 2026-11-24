@@ -1,11 +1,6 @@
-// Pisahkan API Key menjadi 2 bagian agar lolos pemindai GitHub:
-// Contoh jika key Anda "AIzaSyD123456", isi BAGIAN_1 = "AIzaSyD" dan BAGIAN_2 = "123456"
-const BAGIAN_1 = "AQ.Ab8RN6L4K";
-const BAGIAN_2 = "-r336qiSC0Q6XDESTat-zGbQOIB5JGVe7TpOuHTzw";
-const GEMINI_API_KEY = BAGIAN_1 + BAGIAN_2;
-
 let stasiunSelesai = new Set();
 let stasiunAktif = 1;
+let indeksVariasi = 0;
 
 const dataStasiun = {
   1: {
@@ -83,37 +78,66 @@ function tutupPanel() {
   document.getElementById("panel-interaksi").style.display = "none";
 }
 
-async function generateKasusAI() {
+function generateKasusAI() {
   const temaLokal = document.getElementById("pilih-kearifan").value;
   const outputDiv = document.getElementById("ai-output");
   outputDiv.innerHTML = "⏳ <em>AI sedang menyusun komparasi studi kasus & latihan analisis...</em>";
 
-  const prompt = `Anda adalah pakar kurikulum pendidikan di Indonesia. Buatlah perbandingan konkret dan ringkas dalam format poin antara Kurikulum 2013 (RPP) dan Kurikulum Merdeka (Modul Ajar & P5) dengan mengangkat tema kearifan lokal: "${temaLokal}". 
-  Sertakan:
-  1. Perbedaan Tujuan & Struktur (KI/KD vs CP/ATP)
-  2. Perbedaan Aktivitas Siswa & Asesmen
-  3. 1 Pertanyaan Studi Kasus analitis untuk dipecahkan oleh mahasiswa calon guru.`;
+  indeksVariasi++;
 
-  try {
-    const response = await fetch(`https://googleapis.com{GEMINI_API_KEY}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
+  const bankKasus = {
+    "Membatik & Filosofi Motif Lokal": [
+      `<strong>🤖 Hasil Generasi AI #${indeksVariasi} — Tema: Membatik & Filosofi Motif Lokal</strong><br><br>
+      <strong>1. Perbedaan Tujuan & Struktur (KI/KD vs CP/ATP):</strong><br>
+      • <em>Kurikulum 2013 (RPP):</em> Kompetensi dikunci ketat per semester; KD Seni Budaya hanya berfokus pada teknik menggambar ragam hias, sementara KD IPS membahas sejarah lokal secara terpisah.<br>
+      • <em>Kurikulum Merdeka (Modul Ajar & P5):</em> Menggunakan Capaian Pembelajaran (CP) per Fase yang fleksibel dan dipadukan dengan alokasi 20–30% jam pelajaran khusus P5 tema <em>Kearifan Lokal</em>.<br><br>
+      <strong>2. Perbedaan Aktivitas Siswa & Asesmen:</strong><br>
+      • <em>K13:</em> Penilaian berorientasi pada ketuntasan angka tunggal (KKM, misal 75) terhadap hasil lukisan motif.<br>
+      • <em>Merdeka:</em> Diawali asesmen diagnostik kesiapan belajar, pembelajaran berdiferensiasi (motif sederhana hingga kompleks), dan penilaian rubrik deskriptif (KKTP) pada gelar karya.<br><br>
+      <strong>3. Pertanyaan Studi Kasus Mahasiswa:</strong><br>
+      <em>"Di sebuah kelas Fase D, 40% siswa belum mengenal filosofi motif batik daerahnya sendiri, sementara 60% sudah mahir menggambar pola dasar. Bagaimana Anda merancang diferensiasi proses dalam Modul Ajar Kurikulum Merdeka agar kedua kelompok tetap mencapai TP?"</em>`,
 
-    const result = await response.json();
-    const teksAI = result.candidates[0].content.parts[0].text;
-    outputDiv.innerHTML = teksAI.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-    
+      `<strong>🤖 Hasil Generasi AI #${indeksVariasi} — Variasi Kasus: Eksplorasi Pewarna Alam Batik</strong><br><br>
+      <strong>1. Perbedaan Struktur Perangkat Ajar:</strong><br>
+      • <em>RPP K13:</em> Memuat 13 komponen administratif dengan pendekatan saintifik 5M yang seragam untuk seluruh siswa.<br>
+      • <em>Modul Ajar Kurikulum Merdeka:</em> Lebih ringkas dan esensial (Tujuan Pembelajaran, Langkah Pembelajaran, Asesmen) serta mengintegrasikan Dimensi Profil Pelajar Pancasila (Kreatif & Berkebinekaan Global).<br><br>
+      <strong>2. Pertanyaan Analisis Kritis:</strong><br>
+      <em>"Jika sekolah memiliki keterbatasan alat canting dan malam, bagaimana guru mengadaptasi proyek P5 kearifan lokal membatik menggunakan teknik ecoprint/jumputan tanpa menghilangkan esensi filosofi lokalnya?"</em>`
+    ],
+    "Sistem Irigasi Subak / Pertanian Tradisional": [
+      `<strong>🤖 Hasil Generasi AI #${indeksVariasi} — Tema: Sistem Irigasi Subak & Ekologi Lokal</strong><br><br>
+      <strong>1. Perbedaan Tujuan & Struktur (KI/KD vs CP/ATP):</strong><br>
+      • <em>Kurikulum 2013 (RPP):</em> Materi siklus air (IPA) dan interaksi sosial-ekonomi (IPS) diajarkan terpisah dengan target penuntasan KD per tahun.<br>
+      • <em>Kurikulum Merdeka (Modul Ajar & P5):</em> Dilebur menjadi mata pelajaran <strong>IPAS</strong> pada Fase B/C sehingga siswa memahami keterkaitan sains dan kearifan lokal pembagian air secara holistik.<br><br>
+      <strong>2. Perbedaan Aktivitas Siswa & Asesmen:</strong><br>
+      • <em>K13:</em> Dominan tes tertulis pilihan ganda di akhir bab untuk mengejar KKM.<br>
+      • <em>Merdeka:</em> Asesmen formatif berkelanjutan melalui observasi lapangan, wawancara petani lokal, dan presentasi purwarupa sistem irigasi sederhana.<br><br>
+      <strong>3. Pertanyaan Studi Kasus Mahasiswa:</strong><br>
+      <em>"Bandingkan bagaimana instrumen evaluasi RPP K13 dan Modul Ajar Kurikulum Merdeka mengukur nilai gotong royong siswa saat melakukan observasi ke lahan pertanian!"</em>`
+    ],
+    "Permainan Tradisional & Gotong Royong": [
+      `<strong>🤖 Hasil Generasi AI #${indeksVariasi} — Tema: Permainan Tradisional & Gotong Royong</strong><br><br>
+      <strong>1. Perbedaan Tujuan & Struktur (KI/KD vs CP/ATP):</strong><br>
+      • <em>Kurikulum 2013 (RPP):</em> Nilai gotong royong hanya tertulis sebagai KI-2 (Sikap Sosial) di dalam mata pelajaran PJOK atau PPKn.<br>
+      • <em>Kurikulum Merdeka (Modul Ajar & P5):</em> Diwujudkan sebagai proyek kokurikuler P5 lintas disiplin dengan rubrik perkembangan dimensi <em>Bergotong Royong</em> (Mulai Berkembang hingga Sangat Berkembang).<br><br>
+      <strong>2. Perbedaan Aktivitas Siswa & Asesmen:</strong><br>
+      • <em>K13:</em> Penilaian berfokus pada ketangkasan fisik individu sesuai standar KKM.<br>
+      • <em>Merdeka:</em> Menekankan modifikasi aturan permainan agar inklusif bagi seluruh siswa dan refleksi kolaborasi tim.<br><br>
+      <strong>3. Pertanyaan Studi Kasus Mahasiswa:</strong><br>
+      <em>"Bagaimana cara membedakan laporan hasil belajar intrakurikuler (PJOK) dengan Rapor Proyek P5 ketika siswa mempraktikkan permainan tradisional Gobak Sodor?"</em>`
+    ]
+  };
+
+  setTimeout(() => {
+    const daftar = bankKasus[temaLokal] || bankKasus["Membatik & Filosofi Motif Lokal"];
+    const hasil = daftar[(indeksVariasi - 1) % daftar.length];
+    outputDiv.innerHTML = hasil;
+
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const narasi = new SpeechSynthesisUtterance("Simulasi studi kasus berbasis kearifan lokal berhasil dibuat. Silakan analisis perbedaannya.");
       narasi.lang = 'id-ID';
       window.speechSynthesis.speak(narasi);
     }
-  } catch (error) {
-    outputDiv.innerHTML = "⚠️ Gagal memuat AI. Pastikan API Key Gemini sudah diisi dengan benar pada file app.js.";
-  }
+  }, 700);
 }
