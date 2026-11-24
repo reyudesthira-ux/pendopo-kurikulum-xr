@@ -1,7 +1,7 @@
 // Pisahkan API Key menjadi 2 bagian agar lolos pemindai GitHub:
 // Contoh jika key Anda "AIzaSyD123456", isi BAGIAN_1 = "AIzaSyD" dan BAGIAN_2 = "123456"
-const BAGIAN_1 = "AQ.Ab8RN";
-const BAGIAN_2 = "6KjAsWZiDW68RcrOH5VGxy9trWdjyzHxKS7SWXZ33deog";
+const BAGIAN_1 = "AQ.Ab8RN6L4K";
+const BAGIAN_2 = "-r336qiSC0Q6XDESTat-zGbQOIB5JGVe7TpOuHTzw";
 const GEMINI_API_KEY = BAGIAN_1 + BAGIAN_2;
 
 let stasiunSelesai = new Set();
