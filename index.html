@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeri VR/AR: Kurikulum 2013 vs Kurikulum Merdeka</title>
-  <!-- Menggunakan CDN jsdelivr yang lebih cepat dan stabil di jaringan Indonesia -->
   <script src="https://jsdelivr.net"></script>
   <style>
     body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: #E8D8C4; }
@@ -14,7 +13,6 @@
       background: rgba(45, 27, 14, 0.92); color: #F5E6D3; padding: 12px 16px;
       border-radius: 12px; border: 2px solid #D4A373; gap: 8px;
     }
-    /* Tombol navigasi cepat di bawah header agar mudah diakses di HP maupun Laptop */
     #nav-stasiun {
       position: fixed; top: 92px; left: 12px; right: 12px; z-index: 999;
       display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
@@ -60,7 +58,6 @@
     </div>
   </div>
 
-  <!-- Menu Cepat Interaksi (Membantu akses di layar sentuh & memastikan fitur langsung terlihat) -->
   <div id="nav-stasiun">
     <button class="btn-nav" onclick="bukaStasiun(1)">1. Struktur (KI-KD vs CP)</button>
     <button class="btn-nav" onclick="bukaStasiun(2)">2. Asesmen (KKM vs KKTP)</button>
@@ -68,7 +65,6 @@
     <button class="btn-nav" onclick="bukaStasiun(4)">4. Lab Uji Kasus GenAI</button>
   </div>
 
-  <!-- Panel Interaksi & GenAI -->
   <div id="panel-interaksi">
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <h3 id="judul-stasiun" style="margin:0; color:#8B5A2B; font-size:17px;">Judul Stasiun</h3>
@@ -88,13 +84,11 @@
     </div>
   </div>
 
-  <!-- Scene 3D VR/AR (A-Frame WebXR) -->
   <a-scene embedded style="width: 100vw; height: 100vh;" webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #hud-top" cursor="rayOrigin: mouse">
     <a-sky color="#E8D8C4"></a-sky>
     <a-light type="ambient" color="#FFF5E4" intensity="0.8"></a-light>
     <a-light type="directional" position="2 6 4" intensity="0.9"></a-light>
 
-    <!-- Lantai & Struktur Pendopo Nusantara -->
     <a-plane position="0 0 -4" rotation="-90 0 0" width="16" height="16" color="#7C4D2B"></a-plane>
     <a-cone position="0 5.5 -4" radius-bottom="8" radius-top="0.5" height="2.5" color="#4A2C11"></a-cone>
     <a-cylinder position="-4 2.2 -7" radius="0.2" height="4.5" color="#3E220C"></a-cylinder>
@@ -102,25 +96,21 @@
     <a-cylinder position="-4 2.2 -1" radius="0.2" height="4.5" color="#3E220C"></a-cylinder>
     <a-cylinder position="4 2.2 -1" radius="0.2" height="4.5" color="#3E220C"></a-cylinder>
 
-    <!-- Titik Interaksi 1 -->
     
       <a-box width="1.2" height="1.6" depth="0.2" color="#B85D19" animation="property: rotation; to: 0 15 0; dir: alternate; dur: 2000; loop: true"></a-box>
       <a-text value="1. STRUKTUR\nKI-KD vs CP-ATP\n[Klik Analisis]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
     
 
-    <!-- Titik Interaksi 2 -->
     
       <a-dodecahedron radius="0.75" color="#1E6B52" animation="property: position; to: 0 0.2 0; dir: alternate; dur: 1800; loop: true"></a-dodecahedron>
       <a-text value="2. ASESMEN\nKKM vs KKTP\n[Klik Simulasi]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
     
 
-    <!-- Titik Interaksi 3 -->
     
       <a-octahedron radius="0.75" color="#D4A373" animation="property: rotation; to: 0 360 0; dur: 8000; loop: true"></a-octahedron>
       <a-text value="3. PROYEK P5\nKearifan Lokal\n[Klik Rancang]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
     
 
-    <!-- Titik Interaksi 4 -->
     
       <a-torus-knot radius="0.55" radius-tubular="0.12" color="#8B2635" animation="property: rotation; to: 360 360 0; dur: 10000; loop: true"></a-torus-knot>
       <a-text value="4. LAB UJI AI\nEvaluasi Kasus\n[Klik Tantangan]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
@@ -131,6 +121,47 @@
     
   </a-scene>
 
-  <script src="app.js"></script>
-</body>
-</html>
+  <script>
+    let stasiunSelesai = new Set();
+    let indeksVariasi = 0;
+
+    const dataStasiun = {
+      1: {
+        judul: "Stasiun 1: Analisis Struktur (KI-KD vs Capaian Pembelajaran)",
+        deskripsi: "Pada Kurikulum 2013, kompetensi dikunci per tahun melalui KI & KD. Pada Kurikulum Merdeka, kompetensi disusun per Fase (A–F) melalui Capaian Pembelajaran (CP) yang diturunkan menjadi TP dan ATP.",
+        opsi: [
+          { label: "Skenario A: Guru merancang target belajar fleksibel dalam rentang 2 tahun (1 Fase)", benar: true, umpanBalik: "Tepat! Ini ciri khas Kurikulum Merdeka (sistem Fase memberi ruang diferensiasi)." },
+          { label: "Skenario B: Guru wajib menuntaskan seluruh KD dalam 1 semester secara seragam", benar: false, umpanBalik: "Kurang tepat. Pola target seragam per semester/tahun merupakan karakteristik K13." }
+        ]
+      },
+      2: {
+        judul: "Stasiun 2: Paradigma Asesmen (KKM vs KKTP)",
+        deskripsi: "K13 menggunakan Kriteria Ketuntasan Minimal (KKM) berupa angka tunggal, sedangkan Kurikulum Merdeka menggunakan KKTP (Kriteria Ketercapaian Tujuan Pembelajaran) dan menekankan asesmen formatif.",
+        opsi: [
+          { label: "Terapkan Rubrik Deskriptif & Asesmen Awal (Diagnostik)", benar: true, umpanBalik: "Benar! Kurikulum Merdeka mengutamakan asesmen awal untuk memetakan kesiapan belajar siswa." },
+          { label: "Gunakan Nilai Ujian Akhir Semester (UAS) sebagai penentu utama", benar: false, umpanBalik: "Ini mencerminkan orientasi sumatif tradisional pada K13." }
+        ]
+      },
+      3: {
+        judul: "Stasiun 3: Kokurikuler P5 Berbasis Kearifan Lokal",
+        deskripsi: "Perbedaan paling mencolok adalah hadirnya Projek Penguatan Profil Pelajar Pancasila (P5) yang mengambil 20-30% jam pelajaran dengan tema seperti Kearifan Lokal.",
+        opsi: [
+          { label: "Integrasikan proyek pembuatan Batik/Tenun lintas mata pelajaran (IPA, IPS, Seni)", benar: true, umpanBalik: "Sangat tepat! P5 bersifat lintas disiplin dan kontekstual dengan budaya lokal." },
+          { label: "Jadikan proyek sebagai tugas tambahan di dalam mata pelajaran PPKn saja", benar: false, umpanBalik: "Keliru. P5 berdiri terpisah dari intrakurikuler dan tidak terikat satu mata pelajaran." }
+        ]
+      },
+      4: {
+        judul: "Stasiun 4: Lab Sintesis & Evaluasi Kasus GenAI",
+        deskripsi: "Gunakan generator AI di bawah untuk membuat studi kasus nyata di sekolah, lalu analisis bagaimana guru harus beradaptasi dari K13 ke Kurikulum Merdeka.",
+        opsi: [
+          { label: "Selesaikan & Catat Refleksi Pembelajaran", benar: true, umpanBalik: "Selamat! Anda telah menyelesaikan seluruh rangkaian eksplorasi interaktif (Estimasi: 15-20 menit)." }
+        ]
+      }
+    };
+
+    function bukaStasiun(nomor) {
+      const data = dataStasiun[nomor];
+      const panel = document.getElementById("panel-interaksi");
+      const areaAksi = document.getElementById("area-aksi");
+
+      document.getElementById("judul-stasiun").innerText = data.judul;
