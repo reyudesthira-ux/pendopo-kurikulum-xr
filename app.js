@@ -104,7 +104,7 @@ async function generateKasusAI() {
     });
 
     const result = await response.json();
-    const teksAI = result.candidates.content.parts.text;
+    const teksAI = result.candidates[0].content.parts[0].text;
     outputDiv.innerHTML = teksAI.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
     
     if ('speechSynthesis' in window) {
