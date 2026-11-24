@@ -4,35 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeri VR/AR: Kurikulum 2013 vs Kurikulum Merdeka</title>
-  <script src="https://aframe.io"></script>
+  <!-- Menggunakan CDN jsdelivr yang lebih cepat dan stabil di jaringan Indonesia -->
+  <script src="https://jsdelivr.net"></script>
   <style>
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+    body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: #E8D8C4; }
     #hud-top {
-      position: fixed; top: 15px; left: 15px; right: 15px; z-index: 1000;
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(45, 27, 14, 0.9); color: #F5E6D3; padding: 12px 20px;
-      border-radius: 12px; border: 2px solid #D4A373;
+      position: fixed; top: 12px; left: 12px; right: 12px; z-index: 1000;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      background: rgba(45, 27, 14, 0.92); color: #F5E6D3; padding: 12px 16px;
+      border-radius: 12px; border: 2px solid #D4A373; gap: 8px;
     }
+    /* Tombol navigasi cepat di bawah header agar mudah diakses di HP maupun Laptop */
+    #nav-stasiun {
+      position: fixed; top: 92px; left: 12px; right: 12px; z-index: 999;
+      display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    }
+    .btn-nav {
+      background: #D4A373; color: #2D1B0E; border: 2px solid #4A2C11;
+      padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;
+    }
+    .btn-nav:hover { background: #FFF5E4; }
     #panel-interaksi {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      width: 90%; max-width: 650px; z-index: 1000;
-      background: rgba(255, 251, 245, 0.96); color: #2D1B0E;
-      padding: 20px; border-radius: 14px; border: 3px solid #8B5A2B;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none;
+      position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+      width: 92%; max-width: 650px; z-index: 1001;
+      background: rgba(255, 251, 245, 0.98); color: #2D1B0E;
+      padding: 18px; border-radius: 14px; border: 3px solid #8B5A2B;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none; max-height: 75vh; overflow-y: auto;
     }
     .btn {
-      background: #8B5A2B; color: white; border: none; padding: 10px 16px;
-      border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px 4px 0 0;
+      background: #8B5A2B; color: white; border: none; padding: 10px 14px;
+      border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px 4px 0 0; font-size: 13px;
     }
     .btn:hover { background: #6F451E; }
     .btn-ai { background: #1E6B52; }
     .btn-ai:hover { background: #144D3B; }
     #ai-output {
       background: #F4EFE6; padding: 12px; border-left: 4px solid #1E6B52;
-      margin-top: 10px; max-height: 160px; overflow-y: auto; font-size: 14px; line-height: 1.5;
+      margin-top: 10px; max-height: 160px; overflow-y: auto; font-size: 13px; line-height: 1.5;
     }
     select {
-      padding: 8px; border-radius: 6px; border: 1px solid #8B5A2B; width: 65%; margin-top: 8px;
+      padding: 8px; border-radius: 6px; border: 1px solid #8B5A2B; width: 62%; margin-top: 8px;
     }
   </style>
 </head>
@@ -41,18 +52,27 @@
   <div id="hud-top">
     <div>
       <strong>🏛️ Pendopo Kurikulum Nusantara (VR/AR + GenAI)</strong><br>
-      <small>Klik objek 3D di dalam Pendopo untuk menganalisis perbedaan K13 & Kurikulum Merdeka</small>
+      <small>Klik objek 3D di Pendopo atau pilih menu stasiun di bawah untuk analisis K13 vs Merdeka</small>
     </div>
     <div style="text-align: right;">
-      <span id="progres-text">Progres: 0/4 Stasiun</span><br>
+      <span id="progres-text" style="font-weight:bold; color:#FFD166;">Progres: 0/4 Stasiun</span><br>
       <small id="timer-text">Estimasi Modul: 15-20 Menit</small>
     </div>
   </div>
 
+  <!-- Menu Cepat Interaksi (Membantu akses di layar sentuh & memastikan fitur langsung terlihat) -->
+  <div id="nav-stasiun">
+    <button class="btn-nav" onclick="bukaStasiun(1)">1. Struktur (KI-KD vs CP)</button>
+    <button class="btn-nav" onclick="bukaStasiun(2)">2. Asesmen (KKM vs KKTP)</button>
+    <button class="btn-nav" onclick="bukaStasiun(3)">3. Proyek P5 Kearifan Lokal</button>
+    <button class="btn-nav" onclick="bukaStasiun(4)">4. Lab Uji Kasus GenAI</button>
+  </div>
+
+  <!-- Panel Interaksi & GenAI -->
   <div id="panel-interaksi">
-    <div style="display:flex; justify-content:space-between;">
-      <h3 id="judul-stasiun" style="margin:0; color:#8B5A2B;">Judul Stasiun</h3>
-      <button onclick="tutupPanel()" style="background:none; border:none; font-size:18px; cursor:pointer;">✖</button>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 id="judul-stasiun" style="margin:0; color:#8B5A2B; font-size:17px;">Judul Stasiun</h3>
+      <button onclick="tutupPanel()" style="background:#8B5A2B; color:white; border:none; border-radius:6px; padding:4px 10px; cursor:pointer;">✖ Tutup</button>
     </div>
     <p id="deskripsi-stasiun" style="font-size:14px; margin: 10px 0;"></p>
     <div id="area-aksi"></div>
@@ -68,11 +88,13 @@
     </div>
   </div>
 
-  <a-scene webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #hud-top" cursor="rayOrigin: mouse">
+  <!-- Scene 3D VR/AR (A-Frame WebXR) -->
+  <a-scene embedded style="width: 100vw; height: 100vh;" webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #hud-top" cursor="rayOrigin: mouse">
     <a-sky color="#E8D8C4"></a-sky>
-    <a-light type="ambient" color="#FFF5E4" intensity="0.7"></a-light>
-    <a-light type="directional" position="2 6 4" intensity="0.8"></a-light>
+    <a-light type="ambient" color="#FFF5E4" intensity="0.8"></a-light>
+    <a-light type="directional" position="2 6 4" intensity="0.9"></a-light>
 
+    <!-- Lantai & Struktur Pendopo Nusantara -->
     <a-plane position="0 0 -4" rotation="-90 0 0" width="16" height="16" color="#7C4D2B"></a-plane>
     <a-cone position="0 5.5 -4" radius-bottom="8" radius-top="0.5" height="2.5" color="#4A2C11"></a-cone>
     <a-cylinder position="-4 2.2 -7" radius="0.2" height="4.5" color="#3E220C"></a-cylinder>
@@ -80,21 +102,25 @@
     <a-cylinder position="-4 2.2 -1" radius="0.2" height="4.5" color="#3E220C"></a-cylinder>
     <a-cylinder position="4 2.2 -1" radius="0.2" height="4.5" color="#3E220C"></a-cylinder>
 
+    <!-- Titik Interaksi 1 -->
     
       <a-box width="1.2" height="1.6" depth="0.2" color="#B85D19" animation="property: rotation; to: 0 15 0; dir: alternate; dur: 2000; loop: true"></a-box>
       <a-text value="1. STRUKTUR\nKI-KD vs CP-ATP\n[Klik Analisis]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
     
 
+    <!-- Titik Interaksi 2 -->
     
       <a-dodecahedron radius="0.75" color="#1E6B52" animation="property: position; to: 0 0.2 0; dir: alternate; dur: 1800; loop: true"></a-dodecahedron>
       <a-text value="2. ASESMEN\nKKM vs KKTP\n[Klik Simulasi]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
     
 
+    <!-- Titik Interaksi 3 -->
     
       <a-octahedron radius="0.75" color="#D4A373" animation="property: rotation; to: 0 360 0; dur: 8000; loop: true"></a-octahedron>
       <a-text value="3. PROYEK P5\nKearifan Lokal\n[Klik Rancang]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
     
 
+    <!-- Titik Interaksi 4 -->
     
       <a-torus-knot radius="0.55" radius-tubular="0.12" color="#8B2635" animation="property: rotation; to: 360 360 0; dur: 10000; loop: true"></a-torus-knot>
       <a-text value="4. LAB UJI AI\nEvaluasi Kasus\n[Klik Tantangan]" align="center" position="0 1.2 0" color="#2D1B0E" width="3"></a-text>
