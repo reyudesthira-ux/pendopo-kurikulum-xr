@@ -7,28 +7,44 @@
   <script src="https://jsdelivr.net"></script>
   <style>
     body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: #E8D8C4; }
+    
+    /* Pastikan lapisan 3D berada di paling belakang agar tidak memblokir klik */
+    a-scene {
+      position: fixed !important;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 1 !important;
+    }
+
     #hud-top {
-      position: fixed; top: 12px; left: 12px; right: 12px; z-index: 1000;
+      position: fixed; top: 10px; left: 10px; right: 10px; z-index: 9999;
       display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-      background: rgba(45, 27, 14, 0.92); color: #F5E6D3; padding: 12px 16px;
-      border-radius: 12px; border: 2px solid #D4A373; gap: 8px;
+      background: rgba(45, 27, 14, 0.94); color: #F5E6D3; padding: 10px 14px;
+      border-radius: 12px; border: 2px solid #D4A373; gap: 6px;
+      pointer-events: auto;
     }
+
     #nav-stasiun {
-      position: fixed; top: 92px; left: 12px; right: 12px; z-index: 999;
+      position: fixed; top: 88px; left: 10px; right: 10px; z-index: 9999;
       display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+      pointer-events: auto;
     }
+
     .btn-nav {
       background: #D4A373; color: #2D1B0E; border: 2px solid #4A2C11;
-      padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;
+      padding: 8px 14px; border-radius: 20px; font-weight: bold; font-size: 13px; 
+      cursor: pointer; pointer-events: auto; box-shadow: 0 3px 6px rgba(0,0,0,0.3);
     }
-    .btn-nav:hover { background: #FFF5E4; }
+    .btn-nav:active, .btn-nav:hover { background: #FFF5E4; transform: scale(1.03); }
+
     #panel-interaksi {
       position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-      width: 92%; max-width: 650px; z-index: 1001;
+      width: 92%; max-width: 650px; z-index: 10000;
       background: rgba(255, 251, 245, 0.98); color: #2D1B0E;
       padding: 18px; border-radius: 14px; border: 3px solid #8B5A2B;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none; max-height: 75vh; overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; max-height: 72vh; overflow-y: auto;
+      pointer-events: auto;
     }
+
     .btn {
       background: #8B5A2B; color: white; border: none; padding: 10px 14px;
       border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px 4px 0 0; font-size: 13px;
@@ -36,12 +52,13 @@
     .btn:hover { background: #6F451E; }
     .btn-ai { background: #1E6B52; }
     .btn-ai:hover { background: #144D3B; }
+
     #ai-output {
       background: #F4EFE6; padding: 12px; border-left: 4px solid #1E6B52;
-      margin-top: 10px; max-height: 160px; overflow-y: auto; font-size: 13px; line-height: 1.5;
+      margin-top: 10px; max-height: 170px; overflow-y: auto; font-size: 13px; line-height: 1.5;
     }
     select {
-      padding: 8px; border-radius: 6px; border: 1px solid #8B5A2B; width: 62%; margin-top: 8px;
+      padding: 8px; border-radius: 6px; border: 1px solid #8B5A2B; width: 60%; margin-top: 8px;
     }
   </style>
 </head>
@@ -50,7 +67,7 @@
   <div id="hud-top">
     <div>
       <strong>🏛️ Pendopo Kurikulum Nusantara (VR/AR + GenAI)</strong><br>
-      <small>Klik objek 3D di Pendopo atau pilih menu stasiun di bawah untuk analisis K13 vs Merdeka</small>
+      <small>Pilih tombol stasiun di bawah atau klik objek 3D untuk analisis K13 vs Merdeka</small>
     </div>
     <div style="text-align: right;">
       <span id="progres-text" style="font-weight:bold; color:#FFD166;">Progres: 0/4 Stasiun</span><br>
@@ -59,16 +76,16 @@
   </div>
 
   <div id="nav-stasiun">
-    <button class="btn-nav" onclick="bukaStasiun(1)">1. Struktur (KI-KD vs CP)</button>
-    <button class="btn-nav" onclick="bukaStasiun(2)">2. Asesmen (KKM vs KKTP)</button>
-    <button class="btn-nav" onclick="bukaStasiun(3)">3. Proyek P5 Kearifan Lokal</button>
-    <button class="btn-nav" onclick="bukaStasiun(4)">4. Lab Uji Kasus GenAI</button>
+    <button type="button" class="btn-nav" onclick="bukaStasiun(1)">1. Struktur (KI-KD vs CP)</button>
+    <button type="button" class="btn-nav" onclick="bukaStasiun(2)">2. Asesmen (KKM vs KKTP)</button>
+    <button type="button" class="btn-nav" onclick="bukaStasiun(3)">3. Proyek P5 Kearifan Lokal</button>
+    <button type="button" class="btn-nav" onclick="bukaStasiun(4)">4. Lab Uji Kasus GenAI</button>
   </div>
 
   <div id="panel-interaksi">
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <h3 id="judul-stasiun" style="margin:0; color:#8B5A2B; font-size:17px;">Judul Stasiun</h3>
-      <button onclick="tutupPanel()" style="background:#8B5A2B; color:white; border:none; border-radius:6px; padding:4px 10px; cursor:pointer;">✖ Tutup</button>
+      <button type="button" onclick="tutupPanel()" style="background:#8B5A2B; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-weight:bold;">✖ Tutup</button>
     </div>
     <p id="deskripsi-stasiun" style="font-size:14px; margin: 10px 0;"></p>
     <div id="area-aksi"></div>
@@ -79,12 +96,12 @@
         <option value="Sistem Irigasi Subak / Pertanian Tradisional">Kearifan Lokal: Sistem Pertanian & Ekologi Lokal</option>
         <option value="Permainan Tradisional & Gotong Royong">Kearifan Lokal: Permainan Tradisional & Gotong Royong</option>
       </select>
-      <button class="btn btn-ai" onclick="generateKasusAI()">Buat Simulasi Kasus AI</button>
+      <button type="button" class="btn btn-ai" onclick="generateKasusAI()">Buat Simulasi Kasus AI</button>
       <div id="ai-output">Pilih tema kearifan lokal dan klik tombol untuk menghasilkan perbandingan perangkat ajar K13 vs Merdeka secara otomatis.</div>
     </div>
   </div>
 
-  <a-scene embedded style="width: 100vw; height: 100vh;" webxr="optionalFeatures: hit-test, dom-overlay; overlayElement: #hud-top" cursor="rayOrigin: mouse">
+  <a-scene embedded vr-mode-ui="enabled: true" cursor="rayOrigin: mouse">
     <a-sky color="#E8D8C4"></a-sky>
     <a-light type="ambient" color="#FFF5E4" intensity="0.8"></a-light>
     <a-light type="directional" position="2 6 4" intensity="0.9"></a-light>
@@ -154,14 +171,3 @@
         judul: "Stasiun 4: Lab Sintesis & Evaluasi Kasus GenAI",
         deskripsi: "Gunakan generator AI di bawah untuk membuat studi kasus nyata di sekolah, lalu analisis bagaimana guru harus beradaptasi dari K13 ke Kurikulum Merdeka.",
         opsi: [
-          { label: "Selesaikan & Catat Refleksi Pembelajaran", benar: true, umpanBalik: "Selamat! Anda telah menyelesaikan seluruh rangkaian eksplorasi interaktif (Estimasi: 15-20 menit)." }
-        ]
-      }
-    };
-
-    function bukaStasiun(nomor) {
-      const data = dataStasiun[nomor];
-      const panel = document.getElementById("panel-interaksi");
-      const areaAksi = document.getElementById("area-aksi");
-
-      document.getElementById("judul-stasiun").innerText = data.judul;
